@@ -34,7 +34,7 @@ const Report = () => {
 
   const loadSales = async () => {
     try {
-      const res = await axios.get("http://192.168.3.113:3000/api/sales");
+      const res = await axios.get("https://ambika-spare-parts.onrender.com/api/sales");
       setSales(res.data.invoices || []);
     } catch (error) {
       message.error("Error fetching sales");
@@ -52,7 +52,7 @@ const Report = () => {
 
   const loadVendors = async () => {
     try {
-      const res = await axios.get("http://192.168.3.113:3000/api/vendors");
+      const res = await axios.get("https://ambika-spare-parts.onrender.com/api/vendors");
       setVendors(res.data || []);
     } catch (error) {
       message.error("Error fetching vendors");
@@ -61,7 +61,7 @@ const Report = () => {
 
   const loadPurchases = async () => {
     try {
-      const res = await axios.get("http://192.168.3.113:3000/api/purchases");
+      const res = await axios.get("https://ambika-spare-parts.onrender.com/api/purchases");
       setPurchases(res.data || []);
     } catch (error) {
       message.error("Error fetching purchases");

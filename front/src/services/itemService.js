@@ -1,7 +1,7 @@
 // src/services/itemService.js
 import axios from "axios";
 
-const BASE_URL = "http://192.168.3.113:3000/api/items";
+const BASE_URL = "https://ambika-spare-parts.onrender.com/api/items";
 
 export const fetchItems = async () => {
   const response = await axios.get(BASE_URL);

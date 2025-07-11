@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://192.168.3.113:3000/api/customer";
+const API_URL = "https://ambika-spare-parts.onrender.com/api/customer";
 
 export const getCustomers = async () => {
   const response = await axios.get(API_URL);

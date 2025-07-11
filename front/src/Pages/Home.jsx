@@ -49,9 +49,9 @@ const Home = () => {
     const fetchDashboardData = async () => {
       try {
         const [salesRes, customerRes, itemRes] = await Promise.all([
-          axios.get("http://192.168.3.113:3000/api/sales"),
-          axios.get("http://192.168.3.113:3000/api/customer"),
-          axios.get("http://192.168.3.113:3000/api/items"),
+          axios.get("https://ambika-spare-parts.onrender.com/api/sales"),
+          axios.get("https://ambika-spare-parts.onrender.com/api/customer"),
+          axios.get("https://ambika-spare-parts.onrender.com/api/items"),
         ]);
 
         setSales(salesRes.data.invoices || []);

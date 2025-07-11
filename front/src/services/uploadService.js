@@ -1,7 +1,7 @@
 // src/services/uploadService.js
 import axios from "axios";
 
-const UPLOAD_URL = "http://192.168.3.113:3000/api/upload";
+const UPLOAD_URL = "https://ambika-spare-parts.onrender.com/api/upload";
 
 export const uploadImage = async (file, itemNumber) => {
   const formData = new FormData();

@@ -51,8 +51,8 @@ const SalesInvoice = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const productRes = await axios.get("http://192.168.3.113:3000/api/items");
-        const customerRes = await axios.get("http://192.168.3.113:3000/api/customer");
+        const productRes = await axios.get("https://ambika-spare-parts.onrender.com/api/items");
+        const customerRes = await axios.get("https://ambika-spare-parts.onrender.com/api/customer");
         setProducts(productRes.data);
         setCustomers(customerRes.data);
       } catch (error) {
@@ -162,9 +162,9 @@ const SalesInvoice = () => {
     };
 
     try {
-      await axios.post("http://192.168.3.113:3000/api/sales", payload);
+      await axios.post("https://ambika-spare-parts.onrender.com/api/sales", payload);
       for (const product of selectedProducts) {
-        await axios.put(`http://192.168.3.113:3000/api/items/update-stock/${product.productID}`, {
+        await axios.put(`https://ambika-spare-parts.onrender.com/api/items/update-stock/${product.productID}`, {
           quantitySold: product.quantity,
         });
       }

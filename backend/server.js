@@ -5,28 +5,34 @@ const bodyParser = require("body-parser");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-require("dotenv").config(); // Load variables from .env
-
-if (!process.env.MONGO_URI) {
-  console.error("❌ MONGO_URI not found in .env file");
-  process.exit(1);
-}
+require("dotenv").config(); // Loads .env variables
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ Middleware
-app.use(cors());
+// ✅ Verify Mongo URI
+if (!process.env.MONGO_URI) {
+  console.error("❌ MONGO_URI not found in .env");
+  process.exit(1);
+}
+
+// ✅ CORS (Update origin for Netlify in production)
+app.use(cors({
+  origin: "*", // You can use your Netlify domain instead for better security
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 app.use(bodyParser.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// ✅ Ensure uploads/ directory exists
+// ✅ Ensure uploads folder exists
 const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// ✅ Multer setup for file uploads
+// ✅ Multer Setup
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "uploads/"),
   filename: (req, file, cb) => cb(null, Date.now() + "_" + file.originalname),
@@ -44,11 +50,9 @@ const upload = multer({
 });
 
 // ✅ MongoDB Atlas connection
-mongoose
-  .connect(process.env.MONGO_URI)
-
+mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("✅ MongoDB connected to:", mongoose.connection.name);
+    console.log("✅ MongoDB connected:", mongoose.connection.name);
   })
   .catch((err) => {
     console.error("❌ MongoDB connection error:", err);

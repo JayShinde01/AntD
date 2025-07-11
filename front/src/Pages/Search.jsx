@@ -11,7 +11,7 @@ const { TabPane } = Tabs;
 const { Title } = Typography;
 const { Search } = Input;
 
-const BASE_URL = "http://192.168.3.113:3000/api";
+const BASE_URL = "https://ambika-spare-parts.onrender.com/api";
 
 const InventorySearch = () => {
   const [activeTab, setActiveTab] = useState("Item");
