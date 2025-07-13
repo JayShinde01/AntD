@@ -1,4 +1,3 @@
-// Full Updated SalesInvoice.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -203,35 +202,94 @@ const SalesInvoice = () => {
               <Col xs={12} sm={6} md={3}>Discount %</Col>
               <Col xs={12} sm={6} md={3}>Tax %</Col>
               <Col xs={24} sm={12} md={3}>Total</Col>
+              <Col xs={24} md={3}>Remove</Col>
             </Row>
 
-            {selectedProducts.map((product, index) => (
-              <Row gutter={[8, 8]} key={product.id} align="middle" className="product-row">
-                <Col xs={24} sm={12} md={5}>
-                  <Select
-                    showSearch
-                    value={product.name}
-                    placeholder="Select Product"
-                    style={{ width: "100%" }}
-                    className="product-select"
-                    onChange={(val) => handleProductChange(index, "name", val)}
-                    filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
-                  >
-                    {products.filter(p => p.stock > 0).map(p => (
-                      <Option key={p._id} value={p.itemName}>{p.itemName}</Option>
-                    ))}
-                  </Select>
-                </Col>
-                <Col xs={12} sm={6} md={3}><InputNumber min={1} value={product.quantity} onChange={(val) => handleProductChange(index, "quantity", val)} style={{ width: "100%" }} /></Col>
-                <Col xs={12} sm={6} md={3}><InputNumber value={product.price} onChange={(val) => handleProductChange(index, "price", val)} style={{ width: "100%" }} /></Col>
-                <Col xs={12} sm={6} md={3}><InputNumber value={product.discount} onChange={(val) => handleProductChange(index, "discount", val)} style={{ width: "100%" }} /></Col>
-                <Col xs={12} sm={6} md={3}><InputNumber value={product.taxPercentage} onChange={(val) => handleProductChange(index, "taxPercentage", val)} style={{ width: "100%" }} /></Col>
-                <Col xs={24} sm={12} md={3}><InputNumber readOnly value={calculateProductAmount(product).toFixed(2)} style={{ width: "100%" }} /></Col>
-                <Col xs={24} md={3}><Button icon={<MinusCircleOutlined />} danger onClick={() => removeProduct(product.id)} block /></Col>
-              </Row>
-            ))}
+          {selectedProducts.map((product, index) => (
+  <Row gutter={[8, 8]} key={product.id} align="middle" className="product-row">
+    <Col xs={24} sm={12} md={5}>
+      <label className="field-label">Product Name</label>
+      <Select
+        showSearch
+        value={product.name}
+        placeholder="Select Product"
+        style={{ width: "100%" }}
+        className="product-select"
+        onChange={(val) => handleProductChange(index, "name", val)}
+        filterOption={(input, option) =>
+          option.children.toLowerCase().includes(input.toLowerCase())
+        }
+      >
+        {products
+          .filter((p) => {
+            const isAlreadySelected = selectedProducts.some(
+              (selected, i) => selected.name === p.itemName && i !== index
+            );
+            return p.stock > 0 && !isAlreadySelected;
+          })
+          .map((p) => (
+            <Option key={p._id} value={p.itemName}>
+              {p.itemName}
+            </Option>
+          ))}
+      </Select>
+    </Col>
+    <Col xs={12} sm={6} md={3}>
+      <label className="field-label">Qty</label>
+      <InputNumber
+        min={1}
+        value={product.quantity}
+        onChange={(val) => handleProductChange(index, "quantity", val)}
+        style={{ width: "100%" }}
+      />
+    </Col>
+    <Col xs={12} sm={6} md={3}>
+      <label className="field-label">Price</label>
+      <InputNumber
+        value={product.price}
+        onChange={(val) => handleProductChange(index, "price", val)}
+        style={{ width: "100%" }}
+      />
+    </Col>
+    <Col xs={12} sm={6} md={3}>
+      <label className="field-label">Discount %</label>
+      <InputNumber
+        value={product.discount}
+        onChange={(val) => handleProductChange(index, "discount", val)}
+        style={{ width: "100%" }}
+      />
+    </Col>
+    <Col xs={12} sm={6} md={3}>
+      <label className="field-label">Tax %</label>
+      <InputNumber
+        value={product.taxPercentage}
+        onChange={(val) => handleProductChange(index, "taxPercentage", val)}
+        style={{ width: "100%" }}
+      />
+    </Col>
+    <Col xs={24} sm={12} md={3}>
+      <label className="field-label">Total</label>
+      <InputNumber
+        readOnly
+        value={calculateProductAmount(product).toFixed(2)}
+        style={{ width: "100%" }}
+      />
+    </Col>
+    <Col xs={24} md={3}>
+      <label className="field-label">Remove</label>
+      <Button
+        icon={<MinusCircleOutlined />}
+        danger
+        onClick={() => removeProduct(product.id)}
+        block
+      />
+    </Col>
+  </Row>
+))}
 
-            <Button icon={<PlusOutlined />} onClick={addProduct}>Add Product</Button>
+            <Button icon={<PlusOutlined />} onClick={addProduct} style={{ marginTop: 12 }}>
+              Add Product
+            </Button>
           </Card>
 
           <Row gutter={24}>
@@ -254,11 +312,17 @@ const SalesInvoice = () => {
                     style={{ width: "100%" }}
                   >
                     {customers.map(c => (
-                      <Option key={c._id} value={c._id}>{`${c.fullName} - ${c.phoneMobile}`}</Option>
+                      <Option key={c._id} value={c._id}>
+                        {`${c.fullName} - ${c.phoneMobile}`}
+                      </Option>
                     ))}
                   </Select>
                   <DatePicker value={invoiceDate} onChange={setInvoiceDate} style={{ width: "100%" }} />
-                  <Input placeholder="Shipping Address" value={shippingAddress} onChange={(e) => setShippingAddress(e.target.value)} />
+                  <Input
+                    placeholder="Shipping Address"
+                    value={shippingAddress}
+                    onChange={(e) => setShippingAddress(e.target.value)}
+                  />
                 </Space>
               </Card>
             </Col>
@@ -271,21 +335,40 @@ const SalesInvoice = () => {
                 <p>Total Tax: ₹{totals.totalTaxAmount.toFixed(2)}</p>
                 <p><strong>Total Payable: ₹{totals.totalPayable.toFixed(2)}</strong></p>
 
-                <Select value={paymentMode} onChange={(val) => setPaymentMode(val)} style={{ width: "100%", marginBottom: 10 }}>
+                <Select
+                  value={paymentMode}
+                  onChange={(val) => setPaymentMode(val)}
+                  style={{ width: "100%", marginBottom: 10 }}
+                >
                   <Option value="Cash">Cash</Option>
                   <Option value="Online">Online</Option>
                 </Select>
 
-                <InputNumber placeholder="Paid Amount" value={paidAmount} onChange={setPaidAmount} style={{ width: "100%", marginBottom: 10 }} />
+                <InputNumber
+                  placeholder="Paid Amount"
+                  value={paidAmount}
+                  onChange={setPaidAmount}
+                  style={{ width: "100%", marginBottom: 10 }}
+                />
                 <p>Due Amount: ₹{totals.dueAmount.toFixed(2)}</p>
-                <Button type="primary" onClick={handleCreateInvoice} block>Create Invoice</Button>
+                <Button type="primary" onClick={handleCreateInvoice} block>
+                  Create Invoice
+                </Button>
               </Card>
             </Col>
           </Row>
 
           {showReceipt && latestInvoice && (
-            <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "#fff9", zIndex: 1000 }}>
-              <InvoiceReceipt invoiceData={latestInvoice} onClose={() => setShowReceipt(false)} />
+            <div style={{
+              position: "fixed",
+              top: 0, left: 0,
+              width: "100%", height: "100%",
+              background: "#fff9", zIndex: 1000
+            }}>
+              <InvoiceReceipt
+                invoiceData={latestInvoice}
+                onClose={() => setShowReceipt(false)}
+              />
             </div>
           )}
         </Content>

@@ -154,4 +154,69 @@ input[disabled] {
     margin-bottom: 10px;
   }
 }
+/* Field labels for mobile */
+.field-label {
+  display: none;
+  font-weight: 500;
+  font-size: 12px;
+  margin-bottom: 4px;
+  color: #595959;
+}
 
+/* Mobile-friendly product row layout */
+@media (max-width: 768px) {
+  /* Hide table headers */
+  .product-header-row {
+    display: none !important;
+  }
+
+  /* Each product block looks like a card */
+  .product-row {
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    padding: 12px;
+    background-color: #fafafa;
+    margin-bottom: 16px;
+  }
+
+  .product-row .ant-col {
+    flex: 1 1 100%;
+    margin-bottom: 12px;
+  }
+
+  .field-label {
+    display: block;
+  }
+
+  .product-select .ant-select-selector {
+    width: 100% !important;
+  }
+
+  .ant-input-number,
+  .ant-select,
+  .ant-input {
+    width: 100% !important;
+  }
+
+  .remove-product-btn,
+  .add-product-btn {
+    text-align: center;
+    display: block;
+    width: 100%;
+  }
+}
+
+/* Show field label only on mobile */
+.field-label {
+  display: none;
+  font-weight: 500;
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: #555;
+}
+
+@media (max-width: 768px) {
+  .field-label {
+    display: block;
+  }
+}
