@@ -2,39 +2,17 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import "../page_style/home.css";
-import Loading from "../components/Loading.jsx"; // Import the component
-
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  BarChart, Bar, PieChart, Pie, Cell,
 } from "recharts";
 import {
-  Typography,
-  Card,
-  Row,
-  Col,
-  Spin,
-  Table,
-  Statistic,
-  Divider,
-  Skeleton,
+  Typography, Card, Row, Col, Spin, Table, Statistic, Divider, DatePicker, Space,
 } from "antd";
 import {
-  RiseOutlined,
-  ShoppingOutlined,
-  TeamOutlined,
+  RiseOutlined, ShoppingOutlined, TeamOutlined, DollarOutlined, CalendarOutlined,
 } from "@ant-design/icons";
+import moment from "moment";
 
 const { Title } = Typography;
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#845EC2"];
@@ -44,6 +22,7 @@ const Home = () => {
   const [customers, setCustomers] = useState([]);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(moment());
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -53,7 +32,6 @@ const Home = () => {
           axios.get("https://ambika-spare-parts.onrender.com/api/customer"),
           axios.get("https://ambika-spare-parts.onrender.com/api/items"),
         ]);
-
         setSales(salesRes.data.invoices || []);
         setCustomers(customerRes.data || []);
         setItems(itemRes.data || []);
@@ -75,16 +53,17 @@ const Home = () => {
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, "0");
     const day = String(d.getDate()).padStart(2, "0");
+    console.log(`${year}-${month}-${day}`);
+    
     return `${year}-${month}-${day}`;
   };
+console.log(sales);
 
-  // Create formatted sales data
   const salesData = sales.map((sale) => ({
-    date: sale.invoice_date,
-    amount: parseFloat(sale.paid_amount),
+    date: sale.invoiceDate,
+    amount: parseFloat(sale.paidAmount),
   }));
 
-  // Use salesData for calculations
   const getTotalSales = (filterFn) =>
     salesData.filter(filterFn).reduce((sum, sale) => sum + sale.amount, 0);
 
@@ -124,6 +103,10 @@ const Home = () => {
     { title: "Stock", dataIndex: "stock", key: "stock" },
   ];
 
+  const totalSalesOnDate = getTotalSales(
+    (s) => formatDate(s.date) === formatDate(selectedDate)
+  );
+
   return (
     <div className="home-container">
       <Sidebar />
@@ -132,13 +115,11 @@ const Home = () => {
           Dashboard Overview
         </Title>
 
-
-
-  {loading ? (
-  <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "80vh" }}>
-    <Spin size="large" tip="Loading Dashboard..." />
-  </div>
-) : (
+        {loading ? (
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "80vh" }}>
+            <Spin size="large" tip="Loading Dashboard..." />
+          </div>
+        ) : (
           <>
             <Row gutter={[16, 16]}>
               <Col xs={24} md={8}>
@@ -151,8 +132,6 @@ const Home = () => {
                     valueStyle={{ color: "#3f8600" }}
                     suffix="₹"
                   />
-                  {console.log(totalTodaySales)
-                  }
                 </Card>
               </Col>
               <Col xs={24} md={8}>
@@ -187,11 +166,7 @@ const Home = () => {
                       <YAxis />
                       <Tooltip />
                       <Legend />
-                      <Line
-                        type="monotone"
-                        dataKey="amount"
-                        stroke="#1890ff"
-                      />
+                      <Line type="monotone" dataKey="amount" stroke="#1890ff" />
                     </LineChart>
                   </ResponsiveContainer>
                 </Card>
@@ -200,17 +175,11 @@ const Home = () => {
               <Col xs={24} md={12} lg={8}>
                 <Card title="Customer Bar Chart">
                   <ResponsiveContainer width="100%" height={250}>
-                    <BarChart
-                      data={[{ name: "Customers", total: customers.length }]}
-                    >
+                    <BarChart data={[{ name: "Customers", total: customers.length }]}>
                       <XAxis dataKey="name" />
                       <YAxis />
                       <Tooltip />
-                      <Bar
-                        dataKey="total"
-                        fill="#9254de"
-                        radius={[8, 8, 0, 0]}
-                      />
+                      <Bar dataKey="total" fill="#9254de" radius={[8, 8, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </Card>
@@ -230,10 +199,7 @@ const Home = () => {
                         label
                       >
                         {itemStockCounts.map((_, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={COLORS[index % COLORS.length]}
-                          />
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
                       <Tooltip />
@@ -243,11 +209,26 @@ const Home = () => {
               </Col>
             </Row>
 
-            <Card
-              title="Items Sorted by Stock"
-              style={{ marginTop: 24 }}
-              bordered
-            >
+           <Card title="📅 Total Sales on Selected Date" style={{ marginTop: 24, borderRadius: 12, boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
+  <Space direction="vertical" style={{ width: "100%" }}>
+    <DatePicker
+      value={selectedDate}
+      onChange={setSelectedDate}
+      style={{ width: "100%" }}
+      suffixIcon={<CalendarOutlined />}
+    />
+
+    <Statistic
+      title={`Sales on ${moment(selectedDate).format("Do MMM YYYY")}`}
+      value={totalSalesOnDate.toFixed(2)}
+      prefix="="
+      valueStyle={{ color: "#3f8600", fontWeight: 600 }}
+      suffix="₹"
+    />
+  </Space>
+</Card>
+
+            <Card title="Items Sorted by Stock" style={{ marginTop: 24 }} bordered>
               <Table
                 dataSource={sortedItems}
                 columns={columns}
