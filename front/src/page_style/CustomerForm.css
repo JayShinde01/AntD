@@ -1,14 +1,15 @@
-/* Container for the entire layout */
+/* Main layout container */
 .customer-form-container {
   display: flex;
   min-height: 100vh;
   width: 100vw;
-  background-color: #f5f5f5;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-color);
   flex-direction: row;
+  color: var(--text-color);
 }
 
-/* Sidebar layout */
+/* Sidebar */
 .customer-form-sidebar {
   width: 240px;
   background-color: #001529;
@@ -27,7 +28,8 @@
   padding: 30px;
   flex: 1;
   overflow-y: auto;
-  background-color: #ffffff;
+  background-color: var(--content-bg);
+  transition: background-color 0.3s;
 }
 
 /* Notification override */
@@ -35,42 +37,43 @@
   z-index: 9999 !important;
 }
 
-/* Title styling */
+/* Title */
 .customer-form-title {
   text-align: center;
   margin-bottom: 24px;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 600;
+  color: var(--text-color);
 }
 
-/* Styled form block */
+/* Form block */
 .customer-form-form {
-  background-color: #fafafa;
+  background-color: var(--form-bg);
   padding: 24px;
-  border-radius: 8px;
-  border: 1px solid #eaeaea;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-/* Bottom margin for form fields */
+/* Form items */
 .customer-form-form .ant-form-item {
   margin-bottom: 16px;
 }
 
-/* Margin above the buttons */
+/* Button wrapper */
 .customer-form-buttons {
   margin-top: 20px;
   text-align: center;
 }
 
-/* ✅ Responsive adjustments */
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .customer-form-container {
     flex-direction: column;
   }
 
   .customer-form-sidebar {
-    display: none; /* Hide fixed sidebar on mobile */
+    display: none;
   }
 
   .customer-form-content {
@@ -79,8 +82,7 @@
   }
 
   .customer-form-title {
-    font-size: 18px;
-    text-align: center;
+    font-size: 20px;
   }
 
   .customer-form-form {
@@ -93,6 +95,66 @@
 
   .ant-btn {
     width: 100%;
-    margin-top: 8px;
+    margin-top: 10px;
   }
+}
+
+/* Theme variables */
+:root {
+  --bg-color: #f5f5f5;
+  --content-bg: #ffffff;
+  --form-bg: #fafafa;
+  --text-color: #222;
+  --border-color: #e0e0e0;
+}
+
+body.dark {
+  --bg-color: #1f1f1f;
+  --content-bg: #959393;
+  --form-bg: #bababa;
+  --text-color: #f1f1f1;
+  --border-color: #333;
+}
+/* Text color for AntD form labels in dark mode */
+body.dark .ant-form-item-label > label {
+  color: #ffffff !important;
+}
+
+/* Input/Select field text color */
+body.dark .ant-input,
+body.dark .ant-select-selector {
+  color: #ffffff !important;
+  background-color: #747474 !important;
+  border-color: #444 !important;
+}
+
+/* Placeholder text inside inputs */
+body.dark .ant-input::placeholder {
+  color: #cccccc !important;
+}
+
+/* Select dropdown arrow and text */
+body.dark .ant-select-selection-item {
+  color: #ffffff !important;
+}
+
+/* Ant Design table header and cell color */
+body.dark .ant-table {
+  background: #7b7b7b;
+  color: #ffffff;
+}
+body.dark .ant-table-thead > tr > th {
+  background-color: #2d2d2d;
+  color: #ffffff;
+}
+body.dark .ant-table-tbody > tr > td {
+  background-color: #959090;
+  color: #ffffff;
+}
+
+/* Button default color fix */
+body.dark .ant-btn {
+  color: #fff;
+  background-color: #333;
+  border-color: #444;
 }

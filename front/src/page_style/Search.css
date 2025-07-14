@@ -1,41 +1,44 @@
-/* Root container with sidebar space */
+/* Root layout with sidebar space */
 .maindiv {
   display: flex;
   flex-direction: row;
   min-height: 100vh;
-  background-color: #f0f2f5;
   width: 100%;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   overflow-x: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Main content area beside sidebar */
+/* Main content beside sidebar */
 .container {
   flex: 1;
   padding: 32px;
-  background-color: #fff;
-  font-family: Arial, sans-serif;
-  color: #000;
-  box-sizing: border-box;
-  border-radius: 8px;
+  background-color: var(--content-bg);
+  color: var(--text-color);
+  border-radius: 12px;
   margin: 24px;
-  margin-left: 250px; /* Space for fixed sidebar */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  width: calc(100% - 250px); /* Avoid overflow */
+  margin-left: 250px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  width: calc(100% - 250px);
+  box-sizing: border-box;
 }
 
-/* Header title for search page */
+/* Search header title */
 .search_title {
   font-size: 26px;
   background-color: #1890ff;
-  color: #fff;
+  color: white;
   padding: 14px;
-  margin-bottom: 28px;
   border-radius: 6px;
+  margin-bottom: 28px;
   text-align: center;
   font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-/* Search input and buttons bar */
+/* Top section with search bar and controls */
 .top-bar {
   display: flex;
   justify-content: space-between;
@@ -45,36 +48,78 @@
   gap: 12px;
 }
 
-/* Scrollable table container */
+/* Table container with scroll support */
 .table-container {
   width: 100%;
   overflow-x: auto;
 }
 
-/* Table fix: force wrapping */
+/* Minimum width to enable horizontal scroll if needed */
 .table-container table {
   width: 100%;
-  min-width: 600px; /* Make table scroll horizontally if needed */
+  min-width: 600px;
 }
 
-/* ✅ RESPONSIVE STYLES */
+/* Responsive Layout */
 @media (max-width: 768px) {
   .maindiv {
     flex-direction: column;
-    width: 100vw;
-    overflow-x: hidden;
   }
 
   .container {
     margin: 12px;
     margin-left: 0;
     padding: 20px;
-    width: 100vw; /* Use full width on mobile */
     border-radius: 0;
+    width: 100vw;
   }
 
   .top-bar {
     flex-direction: column;
     align-items: stretch;
   }
+}
+
+/* Theme variables */
+:root {
+  --bg-color: #f0f2f5;
+  --content-bg: #ffffff;
+  --text-color: #222;
+}
+
+body.dark {
+  --bg-color: #1f1f1f;
+  --content-bg: #2b2b2b;
+  --text-color: #ffffff;
+}
+
+/* Dark mode input & table fix */
+body.dark .ant-input,
+body.dark .ant-select-selector {
+  background-color: #3a3a3a !important;
+  color: #fff !important;
+  border-color: #555 !important;
+}
+body.dark .ant-input::placeholder {
+  color: #aaa !important;
+}
+body.dark .ant-select-selection-item {
+  color: #fff !important;
+}
+body.dark .ant-table {
+  background: #3a3a3a;
+  color: #fff;
+}
+body.dark .ant-table-thead > tr > th {
+  background-color: #2d2d2d;
+  color: #fff;
+}
+body.dark .ant-table-tbody > tr > td {
+  background-color: #444;
+  color: #fff;
+}
+body.dark .ant-btn {
+  background-color: #333;
+  color: #fff;
+  border-color: #555;
 }

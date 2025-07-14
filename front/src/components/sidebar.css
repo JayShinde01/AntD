@@ -1,5 +1,4 @@
-/* sidebar.css */
-
+/* Sidebar container */
 .sidebar-sider {
   position: fixed;
   height: 100vh;
@@ -11,54 +10,95 @@
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
 }
 
+/* Header section */
 .sidebar-headerbox {
+  padding: 16px 20px;
+  background-color: #002140;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   justify-content: center;
-  padding: 16px;
-  background-color: #dee1e3;
-  text-align: center;
 }
 
+/* Sidebar title text */
 .sidebar-title {
-  color: #a91010;
+  color: #ffffff;
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 600;
+  text-align: left;
 }
 
+/* Logout button styles */
 .sidebar-logout-btn {
   position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   width: 80%;
+  background-color: #ff4d4f;
+  color: #fff;
+  font-weight: 500;
 }
 
+/* Mobile Header */
 .mobile-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  background-color: #737577;
+  background-color: #001529;
 }
 
 .mobile-title {
-  color: rgb(216, 207, 207);
+  color: #ffffff;
   font-size: 16px;
   font-weight: 600;
 }
 
+/* Menu icon button */
 .menu-toggle-btn {
   color: white;
   font-size: 22px;
 }
 
-.ant-menu-dark .ant-menu-item:hover {
+/* Ant Design Menu Hover and Selected */
+.ant-menu-dark .ant-menu-item:hover,
+.ant-menu-dark .ant-menu-item-active {
   background-color: #1890ff !important;
-  color: #fff;
+  color: #ffffff !important;
 }
 
 .ant-menu-dark .ant-menu-item-selected {
   background-color: #1890ff !important;
-  color: #fff;
+  color: #ffffff !important;
+}
+
+/* Dark mode toggle switch wrapper */
+.sidebar-toggle-wrapper {
+  width: 100%;
+  padding: 8px 24px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 14px;
+  gap: 8px;
+}
+
+/* Responsive Drawer Logo Header */
+@media (max-width: 768px) {
+  .sidebar-headerbox {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .sidebar-title {
+    font-size: 16px;
+    color: #fff;
+  }
+
+  .sidebar-logout-btn {
+    width: 90%;
+  }
 }

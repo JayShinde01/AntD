@@ -6,6 +6,7 @@ import { getCustomers } from "../services/customerService";
 import axios from "axios";
 import { debounce } from "lodash";
 import "../page_style/Search.css";
+import { getSalesInvoices } from "../services/salesService";
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -44,27 +45,27 @@ const InventorySearch = () => {
 
   const loadSales = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/sales`);
-      setSales(res.data.invoices || []);
+      const res = await getSalesInvoices();
+      setSales(res.invoices || []);
     } catch (error) {
       message.error("Error fetching sales");
       console.error(error);
     }
   };
 
-  const loadVendors = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/vendors`);
-      setVendors(res.data || []);
-    } catch (error) {
-      message.error("Error fetching vendors");
-      console.error(error);
-    }
-  };
+  // const loadVendors = async () => {
+  //   try {
+  //     const res = await axios.get(`${BASE_URL}/vendors`);
+  //     setVendors(res.data || []);
+  //   } catch (error) {
+  //     message.error("Error fetching vendors");
+  //     console.error(error);
+  //   }
+  // };
 
   const handleRefresh = async () => {
     setLoading(true);
-    await Promise.all([loadItems(), loadCustomers(), loadSales(), loadVendors()]);
+    await Promise.all([loadItems(), loadCustomers(), loadSales()]);
     setLoading(false);
   };
 

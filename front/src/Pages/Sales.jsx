@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import {
   Layout,
@@ -16,9 +17,13 @@ import {
 } from "antd";
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
+
 import Sidebar from "../components/Sidebar";
 import InvoiceReceipt from "../components/InvoiceReceipt";
 import "../page_style/sales.css";
+import { fetchItems } from "../services/itemService";
+import { getCustomers } from "../services/customerService";
+import { createSalesInvoice ,updateItemStock} from "../services/salesService";
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -50,10 +55,10 @@ const SalesInvoice = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const productRes = await axios.get("https://ambika-spare-parts.onrender.com/api/items");
-        const customerRes = await axios.get("https://ambika-spare-parts.onrender.com/api/customer");
-        setProducts(productRes.data);
-        setCustomers(customerRes.data);
+        const productRes = await fetchItems();
+        const customerRes = await getCustomers();
+        setProducts(productRes);
+        setCustomers(customerRes);
       } catch (error) {
         console.error("Error fetching data", error);
       }
@@ -116,6 +121,11 @@ const SalesInvoice = () => {
   };
 
   const addProduct = () => {
+    const last = selectedProducts[selectedProducts.length - 1];
+    if (!last.name) {
+      setAlert({ show: true, type: "warning", message: "Please select a product before adding another." });
+      return;
+    }
     setSelectedProducts([
       ...selectedProducts,
       { id: Date.now(), name: "", quantity: 1, price: 0, discount: 0, taxPercentage: 0 },
@@ -126,13 +136,36 @@ const SalesInvoice = () => {
     setSelectedProducts(selectedProducts.filter((p) => p.id !== id));
   };
 
+  const resetForm = () => {
+    setSelectedProducts([{ id: 1, name: "", quantity: 1, price: 0, discount: 0, taxPercentage: 0 }]);
+    setCustomer(null);
+    setInvoiceDate(moment());
+    setShippingAddress("");
+    setPaymentMode("Cash");
+    setPaidAmount(0);
+    setTotals({
+      totalAmount: 0,
+      totalDiscount: 0,
+      totalTaxAmount: 0,
+      totalAfterDiscount: 0,
+      totalPayable: 0,
+      dueAmount: 0,
+    });
+  };
+
   const handleCreateInvoice = async () => {
     const selectedCustomer = customers.find((c) => c._id === customer);
     if (!selectedCustomer) {
       setAlert({ show: true, type: "error", message: "Please select a valid customer." });
       return;
     }
-    const status = paidAmount >= totals.totalPayable ? "Paid" : paidAmount > 0 ? "Partially Paid" : "Unpaid";
+    const status =
+      paidAmount >= totals.totalPayable
+        ? "Paid"
+        : paidAmount > 0
+        ? "Partially Paid"
+        : "Unpaid";
+
     const payload = {
       invoiceDate: invoiceDate.format("YYYY-MM-DD"),
       invoiceNo: `INV${Date.now()}`,
@@ -161,18 +194,29 @@ const SalesInvoice = () => {
     };
 
     try {
-      await axios.post("https://ambika-spare-parts.onrender.com/api/sales", payload);
+      console.log(payload);
+      console.log(selectedProducts);
+      
+      await createSalesInvoice(payload);
       for (const product of selectedProducts) {
-        await axios.put(`https://ambika-spare-parts.onrender.com/api/items/update-stock/${product.productID}`, {
-          quantitySold: product.quantity,
-        });
+        await updateItemStock(product.productID, product.quantity);
       }
-      setAlert({ show: true, type: "success", message: "Invoice created successfully ✅" });
+
+      setAlert({
+        show: true,
+        type: "success",
+        message: "Invoice created successfully ✅",
+      });
       setLatestInvoice(payload);
       setShowReceipt(true);
+      resetForm();
     } catch (error) {
       console.error(error);
-      setAlert({ show: true, type: "error", message: "Failed to create invoice ❌" });
+      setAlert({
+        show: true,
+        type: "error",
+        message: "Failed to create invoice ❌",
+      });
     }
   };
 
@@ -205,87 +249,80 @@ const SalesInvoice = () => {
               <Col xs={24} md={3}>Remove</Col>
             </Row>
 
-          {selectedProducts.map((product, index) => (
-  <Row gutter={[8, 8]} key={product.id} align="middle" className="product-row">
-    <Col xs={24} sm={12} md={5}>
-      <label className="field-label">Product Name</label>
-      <Select
-        showSearch
-        value={product.name}
-        placeholder="Select Product"
-        style={{ width: "100%" }}
-        className="product-select"
-        onChange={(val) => handleProductChange(index, "name", val)}
-        filterOption={(input, option) =>
-          option.children.toLowerCase().includes(input.toLowerCase())
-        }
-      >
-        {products
-          .filter((p) => {
-            const isAlreadySelected = selectedProducts.some(
-              (selected, i) => selected.name === p.itemName && i !== index
-            );
-            return p.stock > 0 && !isAlreadySelected;
-          })
-          .map((p) => (
-            <Option key={p._id} value={p.itemName}>
-              {p.itemName}
-            </Option>
-          ))}
-      </Select>
-    </Col>
-    <Col xs={12} sm={6} md={3}>
-      <label className="field-label">Qty</label>
-      <InputNumber
-        min={1}
-        value={product.quantity}
-        onChange={(val) => handleProductChange(index, "quantity", val)}
-        style={{ width: "100%" }}
-      />
-    </Col>
-    <Col xs={12} sm={6} md={3}>
-      <label className="field-label">Price</label>
-      <InputNumber
-        value={product.price}
-        onChange={(val) => handleProductChange(index, "price", val)}
-        style={{ width: "100%" }}
-      />
-    </Col>
-    <Col xs={12} sm={6} md={3}>
-      <label className="field-label">Discount %</label>
-      <InputNumber
-        value={product.discount}
-        onChange={(val) => handleProductChange(index, "discount", val)}
-        style={{ width: "100%" }}
-      />
-    </Col>
-    <Col xs={12} sm={6} md={3}>
-      <label className="field-label">Tax %</label>
-      <InputNumber
-        value={product.taxPercentage}
-        onChange={(val) => handleProductChange(index, "taxPercentage", val)}
-        style={{ width: "100%" }}
-      />
-    </Col>
-    <Col xs={24} sm={12} md={3}>
-      <label className="field-label">Total</label>
-      <InputNumber
-        readOnly
-        value={calculateProductAmount(product).toFixed(2)}
-        style={{ width: "100%" }}
-      />
-    </Col>
-    <Col xs={24} md={3}>
-      <label className="field-label">Remove</label>
-      <Button
-        icon={<MinusCircleOutlined />}
-        danger
-        onClick={() => removeProduct(product.id)}
-        block
-      />
-    </Col>
-  </Row>
-))}
+            {selectedProducts.map((product, index) => (
+              <Row gutter={[8, 8]} key={product.id} align="middle" className="product-row">
+                <Col xs={24} sm={12} md={5}>
+                  <label className="field-label">Product Name</label>
+                  <Select
+                    showSearch
+                    value={product.name}
+                    placeholder="Select Product"
+                    style={{ width: "100%" }}
+                    onChange={(val) => handleProductChange(index, "name", val)}
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().includes(input.toLowerCase())
+                    }
+                  >
+                    {products
+                      .filter((p) => {
+                        const isAlreadySelected = selectedProducts.some(
+                          (selected, i) => selected.name === p.itemName && i !== index
+                        );
+                        return p.stock > 0 && !isAlreadySelected;
+                      })
+                      .map((p) => (
+                        <Option key={p._id} value={p.itemName}>
+                          {p.itemName}
+                        </Option>
+                      ))}
+                  </Select>
+                </Col>
+                <Col xs={12} sm={6} md={3}>
+                  <InputNumber
+                    min={1}
+                    value={product.quantity}
+                    onChange={(val) => handleProductChange(index, "quantity", val)}
+                    style={{ width: "100%" }}
+                  />
+                </Col>
+                <Col xs={12} sm={6} md={3}>
+                  <InputNumber
+                    value={product.price}
+                    onChange={(val) => handleProductChange(index, "price", val)}
+                    style={{ width: "100%" }}
+                  />
+                </Col>
+                <Col xs={12} sm={6} md={3}>
+                  <InputNumber
+                    value={product.discount}
+                    onChange={(val) => handleProductChange(index, "discount", val)}
+                    style={{ width: "100%" }}
+                  />
+                </Col>
+                <Col xs={12} sm={6} md={3}>
+                  <InputNumber
+                    value={product.taxPercentage}
+                    onChange={(val) => handleProductChange(index, "taxPercentage", val)}
+                    style={{ width: "100%" }}
+                  />
+                </Col>
+                <Col xs={24} sm={12} md={3}>
+                  <InputNumber
+                    readOnly
+                    value={calculateProductAmount(product).toFixed(2)}
+                    style={{ width: "100%" }}
+                  />
+                </Col>
+                <Col xs={24} md={3}>
+                  <Button
+                    icon={<MinusCircleOutlined />}
+                    danger
+                    onClick={() => removeProduct(product.id)}
+                    block
+                  />
+                </Col>
+              </Row>
+            ))}
 
             <Button icon={<PlusOutlined />} onClick={addProduct} style={{ marginTop: 12 }}>
               Add Product
@@ -306,23 +343,35 @@ const SalesInvoice = () => {
                       if (match?.address) setShippingAddress(match.address);
                     }}
                     filterOption={(input, option) => {
-                      const c = customers.find(c => c._id === option.value);
-                      return c?.fullName.toLowerCase().includes(input.toLowerCase()) || c?.phoneMobile.includes(input);
+                      const c = customers.find((c) => c._id === option.value);
+                      return (
+                        c?.fullName.toLowerCase().includes(input.toLowerCase()) ||
+                        c?.phoneMobile.includes(input)
+                      );
                     }}
-                    style={{ width: "100%" }}
                   >
-                    {customers.map(c => (
+                    {customers.map((c) => (
                       <Option key={c._id} value={c._id}>
                         {`${c.fullName} - ${c.phoneMobile}`}
                       </Option>
                     ))}
                   </Select>
-                  <DatePicker value={invoiceDate} onChange={setInvoiceDate} style={{ width: "100%" }} />
+
+                  <DatePicker
+                    value={invoiceDate}
+                    onChange={setInvoiceDate}
+                    style={{ width: "100%" }}
+                  />
+
                   <Input
                     placeholder="Shipping Address"
                     value={shippingAddress}
                     onChange={(e) => setShippingAddress(e.target.value)}
                   />
+
+                  <div style={{ textAlign: "right" }}>
+                    <Link to="/customer">➕ Add New Customer</Link>
+                  </div>
                 </Space>
               </Card>
             </Col>
@@ -350,8 +399,15 @@ const SalesInvoice = () => {
                   onChange={setPaidAmount}
                   style={{ width: "100%", marginBottom: 10 }}
                 />
+
                 <p>Due Amount: ₹{totals.dueAmount.toFixed(2)}</p>
-                <Button type="primary" onClick={handleCreateInvoice} block>
+
+                <Button
+                  type="primary"
+                  onClick={handleCreateInvoice}
+                  block
+                  disabled={!customer || selectedProducts.length === 0}
+                >
                   Create Invoice
                 </Button>
               </Card>

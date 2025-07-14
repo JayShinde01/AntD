@@ -1,32 +1,31 @@
-/* home.css */
-
+/* ========== BASE STYLES ========== */
 .home-container {
   display: flex;
   height: 100vh;
   width: 100vw;
-  background-color: #f0f2f5;
   text-align: center;
   flex-direction: row;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f0f2f5;
 }
 
-/* Main content */
 .home-content {
   flex: 1;
   padding: 24px;
   overflow-y: auto;
   background-color: #e6f0ff;
-  margin-left: 250px; /* Sidebar space on desktop */
+  margin-left: 250px;
+  color: #222;
 }
 
-/* Dashboard Title */
 .dashboard-title {
-  text-align: center;
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 26px;
+  font-weight: 700;
   margin-bottom: 24px;
+  color: #003366;
 }
 
-/* Card grid layout */
+/* Card */
 .dashboard-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -34,55 +33,167 @@
   margin-bottom: 32px;
 }
 
-/* Card style */
 .dashboard-card {
-  background-color: white;
+  background-color: #ffffff;
   border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease;
+  color: #222;
 }
 
-/* Table wrapper */
+.dashboard-card:hover {
+  transform: scale(1.015);
+}
+
+.dashboard-card h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #1890ff;
+}
+
+.dashboard-card p {
+  font-size: 15px;
+  color: #333;
+}
+
+/* Table */
 .table-wrapper {
   margin-top: 32px;
-  background-color: white;
-  padding: 16px;
+  background-color: #ffffff;
+  padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  overflow-x: auto; /* 👈 Add horizontal scroll on mobile */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  overflow-x: auto;
 }
 
-/* RESPONSIVE STYLES */
+.table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #222;
+}
+
+.table-wrapper th,
+.table-wrapper td {
+  padding: 12px;
+  text-align: center;
+}
+
+.table-wrapper th {
+  background-color: #0050b3;
+  color: white;
+  font-weight: 600;
+}
+
+.table-wrapper td {
+  font-size: 14px;
+  color: #333;
+}
+
+.table-wrapper tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.table-wrapper tr:hover {
+  background-color: #e6f7ff;
+}
+
+/* ========== DARK MODE ========== */
+body.dark .home-container {
+  background-color: #1e1e1e;
+}
+
+body.dark .home-content {
+  background-color: #121212;
+  color: white;
+}
+
+body.dark .dashboard-title {
+  color: #ffffff;
+}
+
+body.dark .dashboard-card {
+  background-color: #1f1f1f;
+  color: white;
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.05);
+}
+
+body.dark .dashboard-card h3 {
+  color: #40a9ff;
+}
+
+body.dark .dashboard-card p {
+  color: #e0e0e0;
+}
+
+body.dark .table-wrapper {
+  background-color: #1f1f1f;
+  color: white;
+}
+
+body.dark .table-wrapper table th {
+  background-color: #0d1a26;
+  color: white;
+}
+
+body.dark .table-wrapper table td {
+  color: white;
+}
+
+body.dark .table-wrapper table tr:hover {
+  background-color: #333;
+}
+
+/* ========== Make All Input Placeholders & Labels White ========== */
+body.dark input,
+body.dark select,
+body.dark textarea {
+  background-color: #1f1f1f;
+  color: white;
+  border: 1px solid #444;
+}
+
+body.dark ::placeholder {
+  color: #bbb !important;
+}
+
+body.dark .ant-form-item-label > label {
+  color: white !important;
+}
+
+body.dark .ant-typography,
+body.dark .ant-typography h1,
+body.dark .ant-typography h2,
+body.dark .ant-typography h3 {
+  color: white;
+}
+
+body.dark .ant-btn {
+  color: white;
+}
+
+/* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   .home-container {
     flex-direction: column;
   }
 
   .home-content {
-    margin-left: 0;         /* Remove sidebar space */
-    padding: 12px;          /* Smaller padding */
+    margin-left: 0;
+    padding: 16px;
   }
 
   .dashboard-title {
-    font-size: 20px;
+    font-size: 22px;
   }
 
   .dashboard-row {
-    grid-template-columns: 1fr; /* Single column layout */
+    grid-template-columns: 1fr;
   }
 
   .dashboard-card,
   .table-wrapper {
-    padding: 12px;
-  }
-
-  /* Optional: Center-align Ant cards on mobile */
-  .ant-card {
-    margin-bottom: 16px;
-  }
-
-  /* Optional: Ensure large charts are scrollable */
-  .recharts-responsive-container {
-    overflow-x: auto;
+    padding: 16px;
   }
 }

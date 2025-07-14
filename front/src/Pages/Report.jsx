@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "../components/Sidebar";
-import { getCustomers } from "../services/customerService";
 import axios from "axios";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -17,6 +16,8 @@ import {
 } from "antd";
 import dayjs from "dayjs";
 import "../page_style/Report.css";
+import { getCustomers } from "../services/customerService";
+import { getSalesInvoices } from "../services/salesService";
 
 const { Content } = Layout;
 const { Title } = Typography;
@@ -34,8 +35,8 @@ const Report = () => {
 
   const loadSales = async () => {
     try {
-      const res = await axios.get("https://ambika-spare-parts.onrender.com/api/sales");
-      setSales(res.data.invoices || []);
+      const res = await   getSalesInvoices();
+      setSales(res.invoices || []);
     } catch (error) {
       message.error("Error fetching sales");
     }
@@ -50,29 +51,29 @@ const Report = () => {
     }
   };
 
-  const loadVendors = async () => {
-    try {
-      const res = await axios.get("https://ambika-spare-parts.onrender.com/api/vendors");
-      setVendors(res.data || []);
-    } catch (error) {
-      message.error("Error fetching vendors");
-    }
-  };
+  // const loadVendors = async () => {
+  //   try {
+  //     const res = await axios.get("https://ambika-spare-parts.onrender.com/api/vendors");
+  //     setVendors(res.data || []);
+  //   } catch (error) {
+  //     message.error("Error fetching vendors");
+  //   }
+  // };
 
-  const loadPurchases = async () => {
-    try {
-      const res = await axios.get("https://ambika-spare-parts.onrender.com/api/purchases");
-      setPurchases(res.data || []);
-    } catch (error) {
-      message.error("Error fetching purchases");
-    }
-  };
+  // const loadPurchases = async () => {
+  //   try {
+  //     const res = await axios.get("https://ambika-spare-parts.onrender.com/api/purchases");
+  //     setPurchases(res.data || []);
+  //   } catch (error) {
+  //     message.error("Error fetching purchases");
+  //   }
+  // };
 
   const handleRefresh = () => {
     loadSales();
     loadCustomers();
-    loadVendors();
-    loadPurchases();
+    // loadVendors();
+    // loadPurchases();
   };
 
   useEffect(() => {

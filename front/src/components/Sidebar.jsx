@@ -7,6 +7,8 @@ import {
   Typography,
   Drawer,
   Grid,
+  Switch,
+  Tooltip,
 } from "antd";
 import {
   HomeOutlined,
@@ -18,8 +20,12 @@ import {
   LogoutOutlined,
   MenuOutlined,
   AppstoreOutlined,
+  BulbFilled,
 } from "@ant-design/icons";
+
 import { AuthContext } from "../context/AuthContext";
+import { DarkModeContext } from "../context/DarkModeContext";
+
 import "./sidebar.css";
 
 const { Sider } = Layout;
@@ -30,6 +36,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { logOut } = useContext(AuthContext);
+  const { darkMode, setDarkMode } = useContext(DarkModeContext);
   const screens = useBreakpoint();
 
   const [isMobile, setIsMobile] = useState(false);
@@ -54,6 +61,7 @@ const Sidebar = () => {
       mode="inline"
       selectedKeys={[location.pathname]}
       onClick={() => isMobile && setDrawerVisible(false)}
+      style={{ fontWeight: 500 }}
     >
       <Menu.Item key="/home" icon={<HomeOutlined />}>
         <Link to="/home">Home</Link>
@@ -76,11 +84,36 @@ const Sidebar = () => {
     </Menu>
   );
 
+  const darkToggle = (
+    <div style={{ padding: "16px 24px", textAlign: "left" }}>
+      <Tooltip title="Toggle Theme">
+        <span style={{ color: "#fff", marginRight: 10 }}>
+          <BulbFilled style={{ fontSize: 18, color: "#fadb14" }} />
+        </span>
+      </Tooltip>
+      <Switch
+        checked={darkMode}
+        onChange={() => setDarkMode(!darkMode)}
+        checkedChildren="🌙"
+        unCheckedChildren="☀️"
+      />
+    </div>
+  );
+
+  const Brand = (
+    <div className="sidebar-headerbox">
+      <Title level={4} className="sidebar-title" style={{ color: "#fff", margin: 0, padding: "16px 24px" }}>
+        <AppstoreOutlined style={{ marginRight: 8 }} />
+        Ambika Spare Parts
+      </Title>
+      {darkToggle}
+    </div>
+  );
+
   return (
     <>
       {isMobile ? (
         <>
-          {/* Mobile Top Bar */}
           <div className="mobile-header">
             <Button
               icon={<MenuOutlined />}
@@ -93,7 +126,6 @@ const Sidebar = () => {
             </Title>
           </div>
 
-          {/* Mobile Drawer */}
           <Drawer
             placement="left"
             closable={false}
@@ -102,42 +134,36 @@ const Sidebar = () => {
             width={240}
             bodyStyle={{ padding: 0, background: "#001529" }}
           >
-            <div className="sidebar-headerbox">
-              <Title level={4} className="sidebar-title">
-                <AppstoreOutlined style={{ marginRight: 6 }} />
-                Ambika Spare Parts
-              </Title>
-            </div>
+            {Brand}
             {menuItems}
+            <div style={{ padding: "16px 24px", textAlign: "center" }}>
+              <Button
+                type="primary"
+                danger
+                icon={<LogoutOutlined />}
+                onClick={handleLogout}
+                block
+              >
+                Logout
+              </Button>
+            </div>
+          </Drawer>
+        </>
+      ) : (
+        <Sider width={240} className="sidebar-sider">
+          {Brand}
+          {menuItems}
+          <div style={{ padding: "16px 24px" }}>
             <Button
               type="primary"
               danger
               icon={<LogoutOutlined />}
               onClick={handleLogout}
-              className="sidebar-logout-btn"
+              block
             >
               Logout
             </Button>
-          </Drawer>
-        </>
-      ) : (
-        <Sider width={220} className="sidebar-sider">
-          <div className="sidebar-headerbox">
-            <Title level={4} className="sidebar-title">
-              <AppstoreOutlined style={{ marginRight: 6 }} />
-              Ambika Spare Parts
-            </Title>
           </div>
-          {menuItems}
-          <Button
-            type="primary"
-            danger
-            icon={<LogoutOutlined />}
-            onClick={handleLogout}
-            className="sidebar-logout-btn"
-          >
-            Logout
-          </Button>
         </Sider>
       )}
     </>

@@ -13,6 +13,9 @@ import {
   RiseOutlined, ShoppingOutlined, TeamOutlined, DollarOutlined, CalendarOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
+import { fetchItems } from "../services/itemService";
+  import { getCustomers } from "../services/customerService";
+import { getSalesInvoices } from "../services/salesService";
 
 const { Title } = Typography;
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#845EC2"];
@@ -27,14 +30,12 @@ const Home = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const [salesRes, customerRes, itemRes] = await Promise.all([
-          axios.get("https://ambika-spare-parts.onrender.com/api/sales"),
-          axios.get("https://ambika-spare-parts.onrender.com/api/customer"),
-          axios.get("https://ambika-spare-parts.onrender.com/api/items"),
-        ]);
-        setSales(salesRes.data.invoices || []);
-        setCustomers(customerRes.data || []);
-        setItems(itemRes.data || []);
+        const customerRes = await getCustomers();
+       const itemRes = await fetchItems();
+       const salesRes = await getSalesInvoices();
+        setSales(salesRes.invoices || []);
+        setCustomers(customerRes || []);
+        setItems(itemRes || []);
         setLoading(false);
       } catch (error) {
         console.error("Error loading dashboard data:", error);

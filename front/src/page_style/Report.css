@@ -1,24 +1,123 @@
-/* Report.css */
+/* Full Report Layout */
+.report-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
+/* Main Content */
+.report-content {
+  flex: 1;
+  padding: 24px;
+  margin-left: 240px;
+  background-color: var(--content-bg);
+  transition: background-color 0.3s, color 0.3s;
+  overflow-y: auto;
+}
+
+/* Heading */
+.report-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 24px;
+  color: var(--text-color);
+  text-align: center;
+}
+
+/* Card-style report block */
+.report-panel {
+  background-color: var(--form-bg);
+  padding: 24px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+}
+
+/* Scrollable Table Container */
 .responsive-container {
   width: 100%;
   overflow-x: auto;
+  background-color: transparent;
 }
 
-/* Fix Layout on small screens */
+/* Table Styles */
+.ant-table {
+  background-color: var(--form-bg);
+  color: var(--text-color);
+}
+.ant-table-thead > tr > th {
+  background-color: #007bff;
+  color: #ffffff;
+}
+.ant-table-tbody > tr > td {
+  background-color: var(--form-bg);
+  color: var(--text-color);
+}
+
+/* Buttons */
+body.dark .ant-btn {
+  background-color: #333;
+  color: #fff;
+  border-color: #444;
+}
+
+/* Responsive Fixes */
 @media (max-width: 768px) {
-  .ant-layout {
-    flex-direction: column !important;
+  .report-wrapper {
+    flex-direction: column;
   }
 
-  .ant-layout-content {
+  .report-content {
     margin-left: 0 !important;
-    width: 100% !important;
     padding: 16px !important;
-    border-radius: 0 !important;
   }
 
   .responsive-container {
     padding: 0 8px;
   }
+
+  .report-title {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .report-panel {
+    padding: 16px;
+  }
+}
+
+/* Theme Variables */
+:root {
+  --bg-color: #f5f5f5;
+  --content-bg: #ffffff;
+  --form-bg: #fafafa;
+  --text-color: #222;
+  --border-color: #e0e0e0;
+}
+
+body.dark {
+  --bg-color: #1f1f1f;
+  --content-bg: #2a2a2a;
+  --form-bg: #3a3a3a;
+  --text-color: #ffffff;
+  --border-color: #444;
+}
+
+/* Form Input & Label */
+body.dark .ant-input,
+body.dark .ant-select-selector {
+  background-color: #444 !important;
+  color: #fff !important;
+  border-color: #666 !important;
+}
+body.dark .ant-input::placeholder {
+  color: #bbbbbb !important;
+}
+body.dark .ant-select-selection-item {
+  color: #ffffff !important;
+}
+body.dark .ant-form-item-label > label {
+  color: #ffffff !important;
 }
