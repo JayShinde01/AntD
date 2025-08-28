@@ -19,6 +19,7 @@ function Login1() {
       navigate('/home');
     }
   }, [user, navigate]);
+console.log(import.meta.env.VITE_FIREBASE_API_KEY);
 
   const onFinish = async (values) => {
     setLoading(true);
