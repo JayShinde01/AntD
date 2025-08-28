@@ -3,10 +3,10 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Typography, Alert, Card } from 'antd';
 import { AuthContext } from '../context/AuthContext';
-import Logo from '../components/Logo'; // Optional: logo if you have one
-import styles from '../page_style/login.module.css'; // ✅ Import CSS module
+import Logo from '../components/Logo';
+import styles from '../page_style/login.module.css';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 function Login1() {
   const [loading, setLoading] = useState(false);
@@ -19,7 +19,6 @@ function Login1() {
       navigate('/home');
     }
   }, [user, navigate]);
-console.log(import.meta.env.VITE_FIREBASE_API_KEY);
 
   const onFinish = async (values) => {
     setLoading(true);
@@ -46,13 +45,22 @@ console.log(import.meta.env.VITE_FIREBASE_API_KEY);
 
   return (
     <div className={styles.loginPageWrapper}>
-      <Card className={styles.loginPageContainer} bordered>
-        <div style={{ textAlign: 'center' }}>
-          <Logo size={100} />
+      <Card
+        className={styles.loginPageContainer}
+        bordered={false}
+        style={{
+          borderRadius: 12,
+          boxShadow: '0 6px 20px rgba(0, 0, 0, 0.15)',
+          padding: '32px 24px',
+          background: 'rgba(255, 255, 255, 0.95)',
+        }}
+      >
+        <div style={{ textAlign: 'center', marginBottom: 20 }}>
+          <Logo size={120} />
         </div>
 
-        <Title level={3} style={{ textAlign: 'center' }}>
-          Log in to Ambika Spare Parts
+        <Title level={3} style={{ textAlign: 'center', marginBottom: 24, color: '#2a5298' }}>
+          Welcome Back 👋
         </Title>
 
         {alert && (
@@ -80,7 +88,11 @@ console.log(import.meta.env.VITE_FIREBASE_API_KEY);
               { type: 'email', message: 'Invalid email format!' },
             ]}
           >
-            <Input placeholder="Enter mail Id" />
+            <Input
+              placeholder="Enter your email"
+              size="large"
+              style={{ borderRadius: 8 }}
+            />
           </Form.Item>
 
           <Form.Item
@@ -88,21 +100,38 @@ console.log(import.meta.env.VITE_FIREBASE_API_KEY);
             name="password"
             rules={[{ required: true, message: 'Please enter your password!' }]}
           >
-            <Input.Password placeholder="Enter password" />
+            <Input.Password
+              placeholder="Enter your password"
+              size="large"
+              style={{ borderRadius: 8 }}
+            />
           </Form.Item>
-
-          {/* <Form.Item>
-            <Link to="/signup">Not registered? Sign up</Link>
-          </Form.Item> */}
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={loading} block>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              block
+              size="large"
+              style={{
+                borderRadius: 8,
+                background: 'linear-gradient(90deg, #2a5298, #1e3c72)',
+                fontWeight: 600,
+              }}
+            >
               Login
             </Button>
-            <Link to={'/signup'}>
-           Click Here To Create Account
-            </Link>
           </Form.Item>
+
+          <div style={{ textAlign: 'center', marginTop: 10 }}>
+            <Text type="secondary">
+              Don’t have an account?{' '}
+              <Link to="/signup" style={{ fontWeight: 600, color: '#2a5298' }}>
+                Sign up here
+              </Link>
+            </Text>
+          </div>
         </Form>
       </Card>
     </div>

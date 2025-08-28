@@ -1,10 +1,12 @@
+// src/pages/SignUp.jsx
 import React, { useContext, useState } from 'react';
-import { Form, Input, Button, Typography, Alert } from 'antd';
+import { Form, Input, Button, Typography, Alert, Card } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import styles from '../page_style/login.module.css';
+import Logo from '../components/Logo';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 function SignUp() {
   const [loading, setLoading] = useState(false);
@@ -34,8 +36,24 @@ function SignUp() {
 
   return (
     <div className={styles.signupPageWrapper}>
-      <div className={styles.signupPageContainer}>
-        <Title level={3} style={{ textAlign: 'center' }}>Signup</Title>
+      <Card
+        className={styles.signupPageContainer}
+        bordered={false}
+        style={{
+          borderRadius: 12,
+          boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
+          padding: '32px 24px',
+          background: 'rgba(255,255,255,0.95)',
+          maxWidth: 400,
+          margin: '0 auto',
+        }}
+      >
+         <div style={{ textAlign: 'center', marginBottom: 20 }}>
+          <Logo size={120} />
+        </div>
+        <Title level={3} style={{ textAlign: 'center', marginBottom: 24, color: '#2a5298' }}>
+          Create Account ✨
+        </Title>
 
         {alert && (
           <Alert
@@ -62,7 +80,11 @@ function SignUp() {
               { type: 'email', message: 'Enter a valid email!' },
             ]}
           >
-            <Input placeholder="Enter email" />
+            <Input
+              placeholder="Enter your email"
+              size="large"
+              style={{ borderRadius: 8 }}
+            />
           </Form.Item>
 
           <Form.Item
@@ -70,20 +92,40 @@ function SignUp() {
             name="password"
             rules={[{ required: true, message: 'Please enter your password!' }]}
           >
-            <Input.Password placeholder="Enter password" />
+            <Input.Password
+              placeholder="Enter your password"
+              size="large"
+              style={{ borderRadius: 8 }}
+            />
           </Form.Item>
 
           <Form.Item>
-            <Link to="/">Already registered? Sign In</Link>
-          </Form.Item>
-
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={loading} block>
-              Signup
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              block
+              size="large"
+              style={{
+                borderRadius: 8,
+                background: 'linear-gradient(90deg, #2a5298, #1e3c72)',
+                fontWeight: 600,
+              }}
+            >
+              Sign Up
             </Button>
           </Form.Item>
+
+          <div style={{ textAlign: 'center', marginTop: 10 }}>
+            <Text type="secondary">
+              Already registered?{' '}
+              <Link to="/login" style={{ fontWeight: 600, color: '#2a5298' }}>
+                Sign In
+              </Link>
+            </Text>
+          </div>
         </Form>
-      </div>
+      </Card>
     </div>
   );
 }
