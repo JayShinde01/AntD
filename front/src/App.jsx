@@ -15,6 +15,7 @@ import Sales from "./Pages/Sales";
 import Loading from "./components/Loading"; // Optional extra route
 
 import { AuthContext } from "./context/AuthContext";
+import SignUp from "./Pages/SignUp";
 
 // Custom loading icon
 const antIcon = <LoadingOutlined style={{ fontSize: 40 }} spin />;
@@ -48,6 +49,7 @@ function App() {
       {/* 🔁 Default route redirects to login */}
       <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/login" element={<Login1 />} />
+      <Route path="/signup" element={<SignUp />} />
 
       {/* 🔒 Protected Routes */}
       <Route path="/sidebar" element={<PrivateRoute><Sidebar /></PrivateRoute>} />

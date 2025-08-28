@@ -98,6 +98,9 @@ function Login1() {
             <Button type="primary" htmlType="submit" loading={loading} block>
               Login
             </Button>
+            <Link to={'/signup'}>
+           Click Here To Create Account
+            </Link>
           </Form.Item>
         </Form>
       </Card>

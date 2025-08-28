@@ -59,3 +59,64 @@
     text-align: center;
   }
 }
+/* signup.module.css */
+
+.signupPageWrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+
+  background-image: url(../assets/w1.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #f6f7fa;
+  position: relative;
+}
+
+.signupPageWrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(185, 167, 167, 0.7);
+  z-index: 0;
+}
+
+.signupPageContainer {
+  width: 100%;
+  max-width: 400px;
+  padding: 24px;
+  background-color: rgb(236, 236, 236);
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+}
+
+/* ✅ Typography and input adjustments */
+.signupPageContainer h3,
+.signupPageContainer label,
+.signupPageContainer input,
+.signupPageContainer button {
+  font-size: 1rem;
+}
+
+/* ✅ Responsive media query */
+@media (max-width: 480px) {
+  .signupPageContainer {
+    padding: 16px;
+    max-width: 100%;
+    border-radius: 8px;
+  }
+
+  .signupPageWrapper {
+    padding: 10px;
+  }
+
+  .signupPageContainer h3 {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+}
